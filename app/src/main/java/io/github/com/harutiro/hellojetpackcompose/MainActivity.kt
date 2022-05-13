@@ -4,6 +4,8 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -133,7 +135,10 @@ fun MessageCard(msg: Message){
         // We keep track if the message is expanded or not in this
         // variable
         var isExpanded by remember { mutableStateOf(false) }
-
+        // surfaceColor will be updated gradually from one color to the other
+        val surfaceColor by animateColorAsState(
+            if (isExpanded) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+        )
 
         // We toggle the isExpanded variable when we click on this Column
         //タッチされたら、isExpanded が　Trueになる
@@ -150,7 +155,11 @@ fun MessageCard(msg: Message){
             //白背景を作る
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                elevation = 1.dp
+                elevation = 1.dp,
+                // surfaceColor color will be changing gradually from primary to surface
+                color = surfaceColor,
+                // animateContentSize will change the Surface size gradually
+                modifier = Modifier.animateContentSize().padding(1.dp)
             ) {
                 Text(
                     text = msg.body,
